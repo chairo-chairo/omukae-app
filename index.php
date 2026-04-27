@@ -8,7 +8,7 @@ $year  = isset($_GET['y']) ? (int)$_GET['y'] : (int)date('Y');
 $month = isset($_GET['m']) ? (int)$_GET['m'] : (int)date('n');
 if ($month < 1)  { $month = 12; $year--; }
 if ($month > 12) { $month = 1;  $year++; }
-$days_in_month = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+$days_in_month = (int)date('t', mktime(0, 0, 0, $month, 1, $year));
 
 // DB取得
 $pdo = get_pdo();

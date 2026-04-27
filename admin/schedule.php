@@ -15,7 +15,7 @@ if ($month > 12) { $month = 1;  $year++; }
 // POST: スケジュール保存
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_schedule'])) {
     csrf_verify();
-    $days_in_month = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+    $days_in_month = (int)date('t', mktime(0, 0, 0, $month, 1, $year));
 
     $upsert = $pdo->prepare("
         INSERT INTO schedule_entries (entry_date, provider_id, pickup_override, no_school, note)
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_holiday'])) {
 $providers_by_id       = fetch_providers_by_id($pdo);
 $default_provider_by_dow = fetch_default_provider_by_dow($pdo);
 
-$days_in_month = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+$days_in_month = (int)date('t', mktime(0, 0, 0, $month, 1, $year));
 $first_day = sprintf('%04d-%02d-01', $year, $month);
 $last_day  = sprintf('%04d-%02d-%02d', $year, $month, $days_in_month);
 
