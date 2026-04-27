@@ -4,13 +4,14 @@ function get_pdo(): PDO
     static $pdo = null;
     if ($pdo !== null) return $pdo;
 
-    // Railway / 本番環境変数（MYSQLHOST が設定されていれば優先）
-    if (getenv('MYSQLHOST') !== false) {
-        $host = getenv('MYSQLHOST');
-        $port = getenv('MYSQLPORT') ?: '3306';
-        $name = getenv('MYSQLDATABASE');
-        $user = getenv('MYSQLUSER');
-        $pass = getenv('MYSQLPASSWORD');
+    // Railway: MYSQL_HOST (アンダースコア) または MYSQLHOST どちらでも対応
+    $host_env = getenv('MYSQL_HOST') !== false ? 'MYSQL_HOST' : (getenv('MYSQLHOST') !== false ? 'MYSQLHOST' : null);
+    if ($host_env !== null) {
+        $host = getenv('MYSQL_HOST') ?: getenv('MYSQLHOST');
+        $port = getenv('MYSQL_PORT') ?: getenv('MYSQLPORT') ?: '3306';
+        $name = getenv('MYSQL_DATABASE') ?: getenv('MYSQLDATABASE');
+        $user = getenv('MYSQL_USER') ?: getenv('MYSQLUSER');
+        $pass = getenv('MYSQL_PASSWORD') ?: getenv('MYSQLPASSWORD');
     } else {
         // ローカル: config/db.php から取得
         $cfg  = require __DIR__ . '/../config/db.php';
